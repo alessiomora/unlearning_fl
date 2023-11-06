@@ -1,6 +1,6 @@
-# Pretrained Visual Transformers in non-IID Federated Learning
+# Federated Unlearning via Local Label Smoothing
 This repository is the official repository of the paper 
-"Pretrained Visual Transformers in non-IID Federated Learning"
+"Federated Unlearning via Local Label Smoothing"
 by Alessio Mora (alessio.mora@unibo.it).
 
 citation
@@ -40,17 +40,17 @@ curl https://pyenv.run | bash
 You can then install any Python version with `pyenv install <python-version>`
 (e.g. `pyenv install 3.9.17`) and set that version as the one to be used. 
 ```bash
-# cd to your fed_vit_non_iid directory (i.e. where the `pyproject.toml` is)
-pyenv install 3.10.6
+# cd to your unlearning_fl directory (i.e. where the `pyproject.toml` is)
+pyenv install 3.10.12
 
-pyenv local 3.10.6
+pyenv local 3.10.12
 
 # set that version for poetry
-poetry env use 3.10.6
+poetry env use 3.10.12
 ```
 To build the Python environment as specified in the `pyproject.toml`, use the following commands:
 ```bash
-# cd to your fed_vit_non_iid directory (i.e. where the `pyproject.toml` is)
+# cd to your unlearning_fl directory (i.e. where the `pyproject.toml` is)
 
 # install the base Poetry environment
 poetry install
