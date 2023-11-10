@@ -63,8 +63,8 @@ def save_dic_as_txt(filename, dic):
 
 if __name__ == '__main__':
     alphas = [1000000]  # alpha >= 100.0 generates a homogeneous distrib.
-    datasets = ["birds"]  # dataset = ["cifar100", "birds", "cars"]
-    nums_of_clients = [29]
+    datasets = ["aircrafts"]  # dataset = ["cifar100", "birds", "cars"]
+    nums_of_clients = [65]
     table_dataset_classes = {"cifar100": 100, "birds": 200, "cars": 196, "aircrafts": 100}
     table_num_of_examples_per_label = {"cifar100": 500, "birds": 32, "cars": 41,
                                        "aircrafts": 70}

@@ -199,6 +199,7 @@ def load_client_datasets_from_files(  # pylint: disable=too-many-arguments
         alpha: float = 0.3,
         split: str = "train",
         model_name: str = "mit-b0",
+        is_training: bool = True,
         seed: Union[int, None] = None,
 ):
     """Load the partition of the dataset for the sampled client.
@@ -228,7 +229,7 @@ def load_client_datasets_from_files(  # pylint: disable=too-many-arguments
 
     if dataset in ["cifar100"]:
         loaded_ds = (
-            loaded_ds.map(preprocess_dataset_for_transformers_models())
+            loaded_ds.map(preprocess_dataset_for_transformers_models(is_training))
                 .map(get_normalization_fn(model_name=model_name))
                 .batch(batch_size, drop_remainder=False)
         )
@@ -236,7 +237,7 @@ def load_client_datasets_from_files(  # pylint: disable=too-many-arguments
         return loaded_ds
     elif dataset in ["birds", "aircrafts", "cars"]:
         loaded_ds = (
-            loaded_ds.map(preprocess_dataset_for_birds_aircafts_cars())
+            loaded_ds.map(preprocess_dataset_for_birds_aircafts_cars(is_training))
                 .map(get_normalization_fn(model_name=model_name, dataset=dataset))
                 .shuffle(2048)
                 .batch(batch_size, drop_remainder=False)

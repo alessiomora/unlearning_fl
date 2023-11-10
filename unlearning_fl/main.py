@@ -54,7 +54,7 @@ enable_tf_gpu_growth()
 
 TEST_BATCH_SIZE = 256
 
-test_aircrafts_path = "./aircrafts_test/test"
+test_aircrafts_path = "/home/amora/pycharm_projects/fed_vit_non_iid/aircrafts_test/test"
 
 
 @hydra.main(config_path="conf", config_name="base", version_base=None)
