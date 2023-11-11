@@ -11,6 +11,7 @@ from unlearning_fl.dataset import (
     get_normalization_fn,
     preprocess_dataset_for_birds_aircafts_cars,
     load_client_datasets_from_files,
+    preprocess_dataset_for_transformers_models,
 )
 from unlearning_fl.model_utility import get_transformer_model
 
@@ -27,7 +28,17 @@ table_dataset_classes = {
 
 
 def return_test_ds(dataset, model_name="mit-b0"):
-    if dataset in ["birds"]:
+    if dataset in ["cifar100"]:
+        (_, _), (x_test, y_test) = tf.keras.datasets.cifar100.load_data()
+        test_ds = tf.data.Dataset.from_tensor_slices((x_test, y_test))
+        test_ds = (
+            test_ds.map(
+                preprocess_dataset_for_transformers_models(is_training=False))
+                .map(get_normalization_fn(model_name))
+                .batch(TEST_BATCH_SIZE)
+        )
+        return test_ds
+    elif dataset in ["birds"]:
         test_ds = tfds.load("caltech_birds2011", split='test',
                             shuffle_files=False, as_supervised=True)
     elif dataset in ["aircrafts"]:
@@ -44,15 +55,15 @@ def return_test_ds(dataset, model_name="mit-b0"):
             .map(get_normalization_fn(model_name, dataset=dataset))
             .batch(TEST_BATCH_SIZE)
     )
-    return test_ds
 
+    return test_ds
 
 def main() -> None:
     print("[Starting Evaluation of Model Checkpoint..]")
-    datasets = ["birds", "aircrafts"]
+    datasets = ["cifar100", "birds", "aircrafts"]
     alpha_dirichlet = -1  # iid
-    total_clients_in_ds = [29, 65]  # total number of clients in the federation
-    clients_per_round_in_ds = [5, 7]
+    total_clients_in_ds = [100, 29, 65]  # total number of clients in the federation
+    clients_per_round_in_ds = [10, 5, 7]
     algorithm = "FedAvg"  # can be "FedAvg" or "FedAvg+KD" or "FedMLB"
     model_name = "mit-b0"  # mit-b0, mit-b1, mit-b2, deit_tiny, deit_small
     optimizer_name = "adamw"
@@ -129,7 +140,7 @@ def main() -> None:
         )
 
         # path = os.path.join(save_path_checkpoints, "dict_info.pickle")
-        last_checkpoint = 100
+        last_checkpoint = 100 if dataset not in ["cifar100"] else 50
 
         path = os.path.join(
             save_path_checkpoints,

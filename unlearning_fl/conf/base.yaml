@@ -13,9 +13,9 @@ classifier_unit_pl: 0
 load_pretrained_weights: True
 trainable_feature_extractor: True
 trainable_blocks: null
-total_clients: 29 # total number of clients
+total_clients: 100 # total number of clients
 num_rounds: 50
-clients_per_round: 5
+clients_per_round: 10
 local_updates: 50
 batch_size: 32 # if set to null, it will calculates local_batch_size as round(local_examples * local_epochs / local_updates)
 local_epochs: 5 # number of local epochs
@@ -34,7 +34,7 @@ client_resources:
   num_gpus: 0.5
 
 dataset_config:
-  dataset: "birds" # can be "cifar100" or "tiny-imagenet"
+  dataset: "cifar100"
   alpha_dirichlet: -1 # can be 0.3, 0.6
 
 strategy:
