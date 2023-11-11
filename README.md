@@ -1,7 +1,6 @@
-# Federated Unlearning via Local Label Smoothing
+# A Survey on Federated Unlearning
 This repository is the official repository of the paper 
-"Federated Unlearning via Local Label Smoothing"
-by Alessio Mora (alessio.mora@unibo.it).
+"A Survey on Federated Unlearning".
 
 citation
 ## Results of pretrained transformers on `imagenet-1k`
