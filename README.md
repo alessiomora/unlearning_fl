@@ -3,28 +3,15 @@ This repository is the official repository of the paper
 "A Survey on Federated Unlearning".
 
 citation
-## Results of pretrained transformers on `imagenet-1k`
-The code in `eval_imagenet1k.py` evaluates pretrained ViT and MiT models 
-on `imagenet-1k` validation set.
+
+## Preliminaries
+The simulation code in this repository mainly leverages Flower 
+and TensorFlow (TF). Python virtual env is managed via Poetry.
+See `unlearning_fl/pyproject.toml`. To reproduce our virtual env,
+follow the instructions in the Environment Setup section of this readme.
 
 
-| Model | Params | Accuracy | 
-| ------------- | ------------- | ------------- |
-| ViT-T | 5.7M | 72.13 |
-| ViT-S | 22M | 78.92 |
-| MiT-B0 | 3.6M | 69.27 |
-| MiT-B1 | 13.7M | 78.01 |
-| MiT-B2 | 24.7M | 81.54 |
 
-ViT architectures and pretraining from [[1]](https://arxiv.org/abs/2012.12877).
-
-MiT architectures and pretraining from [[2]](https://arxiv.org/abs/2105.15203).
-
-[1] Touvron, Hugo, et al. "Training data-efficient image transformers & distillation through attention." 
-International conference on machine learning. PMLR, 2021.
-
-[2] Xie, Enze, et al. "SegFormer: Simple and efficient design for semantic segmentation with transformers." 
-Advances in Neural Information Processing Systems 34 (2021): 12077-12090.
 
 ## Environment Setup
 By default, Poetry will use the Python version in your system. 
@@ -58,3 +45,25 @@ poetry install
 poetry shell
 ```
 
+## Results of pretrained transformers on `imagenet-1k`
+The code in `eval_imagenet1k.py` evaluates pretrained ViT and MiT models 
+on `imagenet-1k` validation set.
+
+
+| Model | Params | Accuracy | 
+| ------------- | ------------- | ------------- |
+| ViT-T | 5.7M | 72.13 |
+| ViT-S | 22M | 78.92 |
+| MiT-B0 | 3.6M | 69.27 |
+| MiT-B1 | 13.7M | 78.01 |
+| MiT-B2 | 24.7M | 81.54 |
+
+ViT architectures and pretraining from [[1]](https://arxiv.org/abs/2012.12877).
+
+MiT architectures and pretraining from [[2]](https://arxiv.org/abs/2105.15203).
+
+[1] Touvron, Hugo, et al. "Training data-efficient image transformers & distillation through attention." 
+International conference on machine learning. PMLR, 2021.
+
+[2] Xie, Enze, et al. "SegFormer: Simple and efficient design for semantic segmentation with transformers." 
+Advances in Neural Information Processing Systems 34 (2021): 12077-12090.
