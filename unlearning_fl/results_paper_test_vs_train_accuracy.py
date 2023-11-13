@@ -4,6 +4,12 @@ import os
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # or any {'0', '1', '2'}
 
+import requests
+import shutil
+import tarfile
+from tqdm import tqdm
+import numpy as np
+from PIL import Image
 import tensorflow as tf
 import tensorflow_datasets as tfds
 from huggingface_hub import snapshot_download
@@ -15,9 +21,13 @@ from unlearning_fl.dataset import (
     preprocess_dataset_for_transformers_models,
 )
 from unlearning_fl.model_utility import get_transformer_model
+from unlearning_fl.prepare_aircraft_dataset import (
+    download_aircracft_dataset,
+
+)
 
 
-TEST_AIRCRAFTS_DATASET = "/home/amora/pycharm_projects/fed_vit_non_iid/aircrafts_test/test"
+TEST_AIRCRAFTS_DATASET = "./aircrafts_test/test"
 TEST_BATCH_SIZE = 128
 
 TABLE_DATASET_CLASSES = {
@@ -26,6 +36,93 @@ TABLE_DATASET_CLASSES = {
     "cars": 196,
     "aircrafts": 100
 }
+
+
+def pil_loader(path):
+    """Load a PIL image."""
+    with open(path, 'rb') as f:
+        with Image.open(f) as img:
+            return img.convert('RGB')
+
+
+def cut_lower_20px_fn(image):
+    target_height = tf.shape(image)[0] - 20
+    target_width = tf.shape(image)[1]
+    img = tf.image.crop_to_bounding_box(
+        image, offset_height=0, offset_width=0, target_height=target_height,
+        target_width=target_width
+    )
+    return img
+
+
+def download_aircracft_dataset():
+    tar_url = "https://www.robots.ox.ac.uk/~vgg/data/fgvc-aircraft/archives/fgvc-aircraft-2013b.tar.gz"
+    fname = "fgvc-aircraft-2013b.tar.gz"
+    chunk_size = 1024
+
+    resp = requests.get(tar_url, stream=True)
+    total = int(resp.headers.get('content-length', 0))
+    with open(fname, 'wb') as file, tqdm(
+        desc=fname,
+        total=total,
+        unit='iB',
+        unit_scale=True,
+        unit_divisor=1024,
+    ) as bar:
+        for data in resp.iter_content(chunk_size=chunk_size):
+            size = file.write(data)
+            bar.update(size)
+
+    if tarfile.is_tarfile(fname):
+        with tarfile.open(fname) as f:
+            f.extractall(path="fgvc-aircraft")
+    return
+
+
+def get_aircrafts_test_set():
+    data_path_img = "./fgvc-aircraft/fgvc-aircraft-2013b/data/images"
+    data_path = "./fgvc-aircraft/fgvc-aircraft-2013b/data"
+    test_path = os.path.join(data_path, "images_variant_test.txt")
+    variants_label_path = os.path.join(data_path,
+                                       "variants.txt")  # contains all the labels
+    convert_label_to_index_dict = {}
+    variant_label_id = 0
+
+    with open(variants_label_path) as variants_file_txt:
+        for line in variants_file_txt:
+            variant_as_string = line.split("\n")[0]  # remove the ending line
+            # print(variant_as_string)
+            convert_label_to_index_dict[variant_as_string] = variant_label_id
+            variant_label_id = variant_label_id + 1
+    cont = 0
+    alphabetical_order = [str(i) for i in range(0, 100)]
+    alphabetical_order.sort()
+    with open(test_path) as test_file_txt:
+        for line in test_file_txt:
+            split = line.split(maxsplit=1)
+            img_file_name = split[0]
+            label = convert_label_to_index_dict[split[1].split("\n")[0]]
+            folder_name = alphabetical_order[label]
+            img_path = os.path.join(data_path_img, img_file_name + ".jpg")
+            img = pil_loader(img_path)
+
+            to_save_img = cut_lower_20px_fn(img)
+            # path = os.path.join("aircrafts_test", "test", str(label))
+            path = os.path.join("aircrafts_test", "test", folder_name)
+            exist = os.path.exists(path)
+            if not exist:
+                os.makedirs(path)
+
+            to_save_img = Image.fromarray(np.uint8(to_save_img.numpy()))
+            path = os.path.join(path, img_file_name + ".jpg")
+            path = path.replace(".jpg", ".png")
+            # img.save('test.jpg', quality="keep")
+            shutil.copy(img_path, path)
+            print(f"[{cont}] Saving: {path}")
+            cont = cont + 1
+            to_save_img.save(path)
+
+    return
 
 
 def return_test_ds(dataset, model_name="mit-b0"):
@@ -60,7 +157,6 @@ def return_test_ds(dataset, model_name="mit-b0"):
     return test_ds
 
 def main() -> None:
-    print("[Starting Evaluation of Model Checkpoint..]")
     datasets = ["cifar100", "birds", "aircrafts"]
     alpha_dirichlet = -1  # iid
     total_clients_in_ds = [100, 29, 65]  # total number of clients in the federation
@@ -74,6 +170,15 @@ def main() -> None:
     random_seed = 25
     cid = 0
 
+    if not os.path.exists(path="./fgvc-aircraft/"):
+        print("[Downloading Datasets...]")
+        download_aircracft_dataset()
+    if not os.path.exists(path="./aircrafts_test"):
+        print("[Preprocessing aircraft data...]")
+        get_aircrafts_test_set()
+
+    print("\n")
+    print("[Starting Evaluation of Model Checkpoint..]")
     for dataset, total_clients, clients_per_round in zip(datasets, total_clients_in_ds, clients_per_round_in_ds):
         print(f"[Dataset: {dataset}]")
         print("[Starting Evaluation of Model Checkpoint..]")
