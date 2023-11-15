@@ -11,6 +11,9 @@ See `unlearning_fl/pyproject.toml`. To reproduce our virtual env,
 follow the instructions in the Environment Setup section of this readme.
 
 
+The code in this repository has been tested on Ubuntu 22.04.3,
+and with Python version `3.10.13`.
+
 
 
 ## Environment Setup
@@ -67,3 +70,48 @@ International conference on machine learning. PMLR, 2021.
 
 [2] Xie, Enze, et al. "SegFormer: Simple and efficient design for semantic segmentation with transformers." 
 Advances in Neural Information Processing Systems 34 (2021): 12077-12090.
+
+## Results from the Paper
+| Dataset | Test | Train | Test | Train | 
+| ------------- | ------------- | ------------- |------------- | ------------- |
+CIFAR-100 | 78.99 | 76.80 | 78.52 | **94.00**
+Aircrafts | 67.72 | 67.00 | 67.66 | **93.00**
+Birds | 70.81 | 63.50 | 70.99 | **95.50**
+
+
+
+<table>
+  <tr>
+    <td></td>
+    <td style="text-align: center", colspan="2">Retrained Model</td>
+    <td style="text-align: center", colspan="2">Model with client *u*</td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> Test </td>
+    <td> Train </td>
+    <td> Test </td>
+    <td> Train </td>
+  </tr>
+  <tr>
+    <td> CIFAR-100 </td>
+    <td> 78.99 </td>
+    <td> 76.80 </td>
+    <td> 78.52 </td>
+    <td> **94.00** </td>
+  </tr>
+<tr>
+    <td> Aircrafts </td>
+    <td> 67.72 </td>
+    <td> 67.00 </td>
+    <td> 67.66 </td>
+    <td> **93.00** </td>
+  </tr>
+  <tr>
+    <td> Birds </td>
+    <td> 70.81 </td>
+    <td> 63.50 </td>
+    <td> 70.99 </td>
+    <td> **95.50** </td>
+  </tr>
+</table>
