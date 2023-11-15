@@ -72,19 +72,12 @@ International conference on machine learning. PMLR, 2021.
 Advances in Neural Information Processing Systems 34 (2021): 12077-12090.
 
 ## Results from the Paper
-| Dataset | Test | Train | Test | Train | 
-| ------------- | ------------- | ------------- |------------- | ------------- |
-CIFAR-100 | 78.99 | 76.80 | 78.52 | **94.00**
-Aircrafts | 67.72 | 67.00 | 67.66 | **93.00**
-Birds | 70.81 | 63.50 | 70.99 | **95.50**
-
-
 
 <table>
   <tr>
     <td></td>
     <td style="text-align: center", colspan="2">Retrained Model</td>
-    <td style="text-align: center", colspan="2">Model with client *u*</td>
+    <td style="text-align: center", colspan="2">Model with client <i>u</i> </td>
   </tr>
   <tr>
     <td> </td>
@@ -115,3 +108,5 @@ Birds | 70.81 | 63.50 | 70.99 | **95.50**
     <td> <b>95.50</b> </td>
   </tr>
 </table>
+
+### Reproducing Results
