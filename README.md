@@ -62,10 +62,11 @@ includes client *u* the global model exhibits significantly higher accuracy on
 client *u*'s train data. This means that the global model trained with client 
 $u$ among the federation may leak information about client *u*'s private data 
 and that may be susceptible to, at least, membership attacks. 
-Table I below reports the accuracy of a global model
+The table below reports the accuracy of a global model
 *w* trained on a federation of participants including or excluding a specific
 client *u*. Three datasets for image classification were considered 
-(CIFAR-100, Birds and Aircrafts), and a visual transformer architecture
+(CIFAR-100, Birds and Aircrafts) partitioned in homogeneous (IID) and 
+heterogeneous (non-IID) ways, and a visual transformer architecture
 was used (MiT-B0), starting from a pretrained
 checkpoint and performing FL for 100 rounds. Further detail about the 
 experimental settings are provided in section Experimental Setting.
@@ -155,8 +156,12 @@ regularization of 1e-3.
 
 #### Datasets
 We performed the experiments on three datasets, i.e. CIFAR-100, 
-Caltech-2011 (birds), and FGVC-Aircraft (aircrafts).
-
+Caltech-2011 (birds), and FGVC-Aircraft (aircrafts). We provided two settings for the 
+data partitioning among clients of each dataset:
+identically and independently distributed (IID) data, 
+i.e. each client holds approximately the same number of per-class examples, and
+non-IID simulated via distribution-based label skew following
+the method from [3] (with concentration parameter of 0.1).
 
 **CIFAR-100.** CIFAR-100 consists of 60,000 examples of 32x32 color images 
 -- 50,000 for training and 10,000 for testing -- belonging to 100 classeDs. 
@@ -217,3 +222,6 @@ International conference on machine learning. PMLR, 2021.
 
 [2] Xie, Enze, et al. "SegFormer: Simple and efficient design for semantic segmentation with transformers." 
 Advances in Neural Information Processing Systems 34 (2021): 12077-12090.
+
+[3] T.-M. H. Hsu, H. Qi, and M. Brown, “Measuring the effects of nonidentical data distribution for federated visual classification,” arXiv
+preprint arXiv:1909.06335, 2019.
