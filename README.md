@@ -1,8 +1,12 @@
-# A Survey on Federated Unlearning
+# Federated Unlearning: A Survey on Methods, Design Guidelines, and Evaluation Metrics
 This repository is the official repository of the paper 
-"A Survey on Federated Unlearning".
+"Federated Unlearning: A Survey on Methods, Design Guidelines, and Evaluation Metrics"
+by Nicolò Romandini, Alessio Mora, Carlo Mazzocca, Rebecca Montanari, Paolo Bellavista.
 
-citation
+arxiv: https://arxiv.org/pdf/2401.05146.pdf
+
+
+Submitted to IEEE Transactions on Neural Networks and Learning Systems.
 
 ## Preliminaries
 The simulation code in this repository mainly leverages Flower 
@@ -140,8 +144,7 @@ selected to participate.
 of color images -- 5,994 for training and 5,794 for testing -- belonging
 to 200 classes. To match the input size of the transformer models we resized 
 the images to a resolution of 224x224 pixels; we also preprocessed the training
-images with random crop and horizontal flip layers, similarly to the work in
-\cite{hu2023federated}. We partitioned the training set to simulate 29 clients
+images with random crop and horizontal flip layers. We partitioned the training set to simulate 29 clients
 in the federation; we set 29 as the number of clients so that, 
 in the IID setting, each client can have at least one per-class (unique) example.
 At each round, 5 clients out of 29 were randomly selected to participate.
@@ -157,8 +160,7 @@ images for each of the 100 different aircraft model variants. We removed the
 copyright banner from the images by cutting off the bottom 20 pixels in height. 
 To match the input size of the transformer models we resized the images to a 
 resolution of 224x224 pixels; we also preprocessed the training images with 
-random crop and horizontal flip layers, similarly to the work in 
-\cite{hu2023federated}. We partitioned the training set to simulate 
+random crop and horizontal flip layers. We partitioned the training set to simulate 
 65 clients in the federation; we set 65 as the number of clients so 
 that, in the IID setting, each client can have at least one per-class
 (unique) example. At each round, 7 clients out of 65 were randomly
