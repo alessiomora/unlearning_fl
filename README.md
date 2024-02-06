@@ -54,7 +54,7 @@ poetry shell
 
 ## Results from the Paper
 To intuitively understand the impact of a client's data on the global model
-we performed a set of experiments, shown in Table below (Table I in the paper),
+we performed a set of experiments, shown in Table below (Table III in the paper),
 where we compared the performance in accuracy of a global model trained including 
 or excluding a specific client $u$ in the federation. While the test accuracy is 
 very similar among such two versions of the global models, when the federation
@@ -80,7 +80,7 @@ to the global model's accuracy on the train set of client *u*.
     <td style="text-align: center", colspan="2">Model with client <i>u</i> </td>
   </tr>
   <tr>
-    <td> </td>
+    <td> <b> IID </b></td>
     <td> Test </td>
     <td> Train </td>
     <td> Test </td>
@@ -88,24 +88,52 @@ to the global model's accuracy on the train set of client *u*.
   </tr>
   <tr>
     <td> CIFAR-100 </td>
-    <td> 78.99 </td>
-    <td> 76.80 </td>
+    <td> 79.37 </td>
+    <td> 78.72 </td>
     <td> 78.52 </td>
-    <td> <b>94.00</b></td>
+    <td> <b>87.00</b></td>
   </tr>
 <tr>
     <td> Aircrafts </td>
-    <td> 67.72 </td>
-    <td> 67.00 </td>
-    <td> 67.66 </td>
-    <td> <b>93.00</b> </td>
+    <td> 68.53 </td>
+    <td> 66.00 </td>
+    <td> 68.83 </td>
+    <td> <b>90.00</b> </td>
   </tr>
   <tr>
     <td> Birds </td>
-    <td> 70.81 </td>
-    <td> 63.50 </td>
-    <td> 70.99 </td>
-    <td> <b>95.50</b> </td>
+    <td> 69.4 </td>
+    <td> 69.00 </td>
+    <td> 70.66 </td>
+    <td> <b>99.50</b> </td>
+  </tr>
+  <tr>
+    <td> <b> non-IID </b></td>
+    <td> Test </td>
+    <td> Train </td>
+    <td> Test </td>
+    <td> Train </td>
+  </tr>
+  <tr>
+    <td> CIFAR-100 </td>
+    <td> 70.90 </td>
+    <td> 67.34 </td>
+    <td> 70.98 </td>
+    <td> <b>94.60</b></td>
+  </tr>
+<tr>
+    <td> Aircrafts </td>
+    <td> 54.64 </td>
+    <td> 58.82 </td>
+    <td> 58.36 </td>
+    <td> <b>88.24</b> </td>
+  </tr>
+  <tr>
+    <td> Birds </td>
+    <td> 59.13 </td>
+    <td> 57.30 </td>
+    <td> 57.37 </td>
+    <td> <b>83.78</b> </td>
   </tr>
 </table>
 
