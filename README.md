@@ -164,7 +164,7 @@ non-IID simulated via distribution-based label skew following
 the method from [3] (with concentration parameter of 0.1).
 
 **CIFAR-100.** CIFAR-100 consists of 60,000 examples of 32x32 color images 
--- 50,000 for training and 10,000 for testing -- belonging to 100 classeDs. 
+-- 50,000 for training and 10,000 for testing -- belonging to 100 classes. 
 To match the transformer models' input size, we resized the images to a 
 resolution of 224x224 pixels; we also preprocessed the training images with
 random crop and horizontal flip layers. We partitioned the training set to 
