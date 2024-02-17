@@ -56,7 +56,7 @@ class PaddedRandomCropCustom(tf.keras.layers.Layer):
                 target_width=self.width + 4,
             )
             inputs = tf.image.random_crop(
-                value=inputs, size=[self.height, self.width, 3], seed=self.seed
+                value=inputs, size=[self.hfeight, self.width, 3], seed=self.seed
             )
 
             return inputs
@@ -231,6 +231,7 @@ def load_client_datasets_from_files(  # pylint: disable=too-many-arguments
         loaded_ds = (
             loaded_ds.map(preprocess_dataset_for_transformers_models(is_training))
                 .map(get_normalization_fn(model_name=model_name))
+                .shuffle(2048)
                 .batch(batch_size, drop_remainder=False)
         )
         loaded_ds = loaded_ds.prefetch(tf.data.AUTOTUNE)

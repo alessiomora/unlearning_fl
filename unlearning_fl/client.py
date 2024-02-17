@@ -7,8 +7,11 @@ import tensorflow as tf
 from flwr.common import NDArrays, Scalar
 
 
-def write_on_file(to_print_string: str):
-    filename = "unlearning_client_participation.txt"
+def write_on_file(to_print_string: str, dataset: str, alpha_dir: float):
+    if alpha_dir < 0:
+        filename = dataset + "_iid" + "_unlearning_client_participation.txt"
+    else:
+        filename = dataset + "_dir" + str(round(alpha_dir, 2)) +"_unlearning_client_participation.txt"
     with open(filename, 'a') as file:
         file.write(to_print_string + "\n")
 
@@ -22,13 +25,17 @@ class TFClient(fl.client.NumPyClient):
         model: tf.keras.Model,
         num_examples_train: int,
         algorithm: str,
-        cid: int
+        dataset: str,
+        cid: int,
+        alpha_dir : float,
     ):
         self.model = model
         self.train_ds = train_ds
         self.num_examples_train = num_examples_train
         self.algorithm = algorithm
         self.cid = cid
+        self.dataset = dataset
+        self.alpha_dir = alpha_dir
 
     def get_parameters(self, config: Dict[str, Scalar]) -> NDArrays:
         """Get the local model parameters."""
@@ -43,8 +50,10 @@ class TFClient(fl.client.NumPyClient):
         exp_decay: float = float(config["exp_decay"])
         lr_client_initial: float = float(config["lr_client_initial"])
 
+        print("[CID] ", self.cid)
         if self.cid == 0:
-            write_on_file(f"[Round {current_round}] Client {self.cid} has participated")
+            # write_on_file(f"[Round {current_round}] Client {self.cid} has participated")
+            write_on_file(f"{current_round}", dataset=self.dataset, alpha_dir=self.alpha_dir)
 
         if current_round > 1:
             lr_client = lr_client_initial * (exp_decay ** (current_round - 1))
@@ -57,6 +66,8 @@ class TFClient(fl.client.NumPyClient):
             self.model.global_model.set_weights(parameters)
         elif self.algorithm in ["FedAvg"]:
             self.model.set_weights(parameters)
+        else:  # fedsmoothie
+            self.model.local_model.set_weights(parameters)
 
         # self.model.summary()
         # Get hyperparameters for this round
@@ -67,8 +78,8 @@ class TFClient(fl.client.NumPyClient):
         # in model.fit it is not mandatory to specify
         # batch_size if the dataset is already batched
         # as in our case
-        # results = self.model.fit(self.train_ds, epochs=epochs, verbose=0)
-        results = self.model.fit(self.train_ds, epochs=epochs)
+        results = self.model.fit(self.train_ds, epochs=epochs, verbose=0)
+        # results = self.model.fit(self.train_ds, epochs=epochs)
         # results = self.model.fit(self.train_ds, epochs=epochs, validation_data=test_ds)
 
         # test_aircrafts_path = "./aircrafts_test/test"

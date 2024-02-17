@@ -62,9 +62,10 @@ def save_dic_as_txt(filename, dic):
 
 
 if __name__ == '__main__':
-    alphas = [1000000]  # alpha >= 100.0 generates a homogeneous distrib.
+    no_repetition = True
+    alphas = [10000, 0.1]  # alpha >= 100.0 generates a homogeneous distrib.
     datasets = ["cifar100"]  # dataset = ["cifar100", "birds", "cars", "aircrafts"]
-    nums_of_clients = [100]
+    nums_of_clients = [500]
     table_dataset_classes = {"cifar100": 100, "birds": 200, "cars": 196, "aircrafts": 100}
     table_num_of_examples_per_label = {"cifar100": 500, "birds": 32, "cars": 41,
                                        "aircrafts": 70}
@@ -146,6 +147,7 @@ if __name__ == '__main__':
 
                 c = 0
                 indexes_of_labels_backup = [element for element in indexes_of_labels]
+                smpls = smpls.numpy()
                 for per_client_sample in smpls:
                     print(f"[Client {c}] Generating dataset..")
                     label = 0
@@ -153,16 +155,25 @@ if __name__ == '__main__':
                     list_extracted_all_labels = []
 
                     for num_of_examples_per_label in per_client_sample:
-                        if len(indexes_of_labels[label]) < num_of_examples_per_label:
-                            print("[WARNING] Repeated examples!")
-                            remained = len(indexes_of_labels[label])
-                            extracted_1 = np.random.choice(indexes_of_labels[label], remained, replace=False)
-                            indexes_of_labels[label] = indexes_of_labels_backup[label]
-                            extracted_2 = np.random.choice(indexes_of_labels[label], num_of_examples_per_label - remained,
-                                                           replace=False)
-                            extracted = np.concatenate((extracted_1, extracted_2), axis=0)
+                        if no_repetition:
+                            if len(indexes_of_labels[label]) < num_of_examples_per_label:
+                                print(f"label {label} ended")
+                                extracted = np.random.choice(indexes_of_labels[label], len(indexes_of_labels[label]), replace=False)
+                                smpls[c, label] = smpls[c, label] - len(indexes_of_labels[label])
+                            else:
+                                extracted = np.random.choice(indexes_of_labels[label], num_of_examples_per_label, replace=False)
                         else:
-                            extracted = np.random.choice(indexes_of_labels[label], num_of_examples_per_label, replace=False)
+                            if len(indexes_of_labels[label]) < num_of_examples_per_label:
+                                print("[WARNING] Repeated examples!")
+                                remained = len(indexes_of_labels[label])
+                                extracted_1 = np.random.choice(indexes_of_labels[label], remained, replace=False)
+                                indexes_of_labels[label] = indexes_of_labels_backup[label]
+                                extracted_2 = np.random.choice(indexes_of_labels[label], num_of_examples_per_label - remained,
+                                                               replace=False)
+                                extracted = np.concatenate((extracted_1, extracted_2), axis=0)
+                            else:
+                                extracted = np.random.choice(indexes_of_labels[label], num_of_examples_per_label, replace=False)
+
                         indexes_of_labels[label] = remove_list_from_list(indexes_of_labels[label], extracted.tolist())
 
                         for ee in extracted.tolist():
@@ -210,9 +221,11 @@ if __name__ == '__main__':
                     c = c + 1
 
                 path = os.path.join(folder_path, "distribution_train.npy")
-                np.save(path, smpls.numpy())
+                np.save(path, smpls)
                 smpls_loaded = np.load(path)
-                print(smpls_loaded)
+                tf.print(smpls_loaded, summarize=-1)
+                print("Reduce sum axis label", tf.reduce_sum(smpls_loaded, axis=1))
+                print("Reduce sum axis client", tf.reduce_sum(smpls_loaded, axis=0))
                 print("Reduce sum ", tf.reduce_sum(smpls_loaded))
 
                 folder_path = os.path.join(
